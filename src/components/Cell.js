@@ -4,7 +4,7 @@ function Cell(props) {
     const { content } = props;
 
     return (
-        <td>{content}</td>
+        <td className={props.className}>{content}</td>
     )
 }
 

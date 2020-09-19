@@ -1,11 +1,18 @@
 import * as React from 'react';
-import Table from './Table';
+import styled from '@emotion/styled';
+
+import AppointmentTable from './AppointmentTable';
+
+const StyledMainContainer = styled.div`
+    border: 1px solid lightgrey;
+    padding: 4px;
+`;
 
 function MainContainer() {
     return (
-        <div>
-            <Table />
-        </div>
+        <StyledMainContainer>
+            <AppointmentTable />
+        </StyledMainContainer>
     )
 }
 
