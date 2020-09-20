@@ -1,29 +1,28 @@
 import * as React from 'react';
-import axios from '../helpers/axios';
 
 import AppointmentRow from './AppointmentRow';
 import { appointmentHeaders } from '../constants/headers';
+import axios from '../helpers/axios';
 
 class AppointmentTable extends React.Component {
     constructor(props) {
         super(props);
         
         this.state = {
-            appointments: [
-                {
-                    "name": "testName",
-                    "to": "TO",
-                    "from": "FROM",
-                    "comment": "testComment"
-                }
-            ]
+            appointments: []
         }
     }
 
     async componentDidMount() {
         const { data } = await axios.get('/appointments');
 
-        console.log(data);
+        this.setState({
+            appointments: data
+        });
+    }
+
+    async componentDidUpdate() {
+        const { data } = await axios.get('/appointments');
 
         this.setState({
             appointments: data
@@ -39,11 +38,15 @@ class AppointmentTable extends React.Component {
         );
     };
 
-    renderCells = () => this.state.appointments.map(apppointment => (
-        <AppointmentRow
-            appointment={apppointment}
-        />
-    ));
+    renderCells = () => {
+        if (this.state.appointments) {
+            return this.state.appointments.map(apppointment => (
+                <AppointmentRow
+                    appointment={apppointment}
+                />
+            ));
+        }
+    }
 
     render() {
         return (
@@ -57,6 +60,7 @@ class AppointmentTable extends React.Component {
             </table>
         )
     }
+
 }
 
 export default AppointmentTable;

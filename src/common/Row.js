@@ -33,15 +33,11 @@ function Row(props) {
 
     if (isHeader) {
         return (
-            <tr>
-                {renderHeaders()}
-            </tr>
+            renderHeaders()
         )
     } else {
         return (
-            <tr>
-                {renderCells()}
-            </tr>
+            renderCells()
         )
     }
 }
