@@ -1,6 +1,5 @@
 import * as React from 'react';
 import styled from '@emotion/styled';
-import axios from '../helpers/axios';
 
 import Row from '../common/Row';
 import Button from '../common/Button';
@@ -13,7 +12,7 @@ const StyledCell = styled(Cell)`
 `;
 
 function AppointmentRow(props) {
-    const { isHeader, appointment } = props;
+    const { isHeader, appointment, changeIsEdit, handleDelete } = props;
 
     const { _id } = appointment;
 
@@ -33,21 +32,21 @@ function AppointmentRow(props) {
         ];
     }
 
-    const handleDelete = async () => {
-        try {
-            await axios.delete(`/appointment/${_id}`);
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
     const renderButtons = () => {
         if (!isHeader) {
             return (
-                <Button 
-                    onClick={handleDelete}
-                    content='Delete'
-                />
+                <div>
+                    <Button
+                        onClick={changeIsEdit}
+                        content='Edit'
+                    />
+                    <Button 
+                        onClick={() => {
+                            handleDelete(_id)
+                        }}
+                        content='Delete'
+                    />
+                </div>
             )
         }
     }

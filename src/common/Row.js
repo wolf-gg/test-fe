@@ -12,7 +12,7 @@ const Header = styled(Cell)`
 
 const StyledCell = styled(Cell)`
     padding: 10px 10px 10px 10px;
-    text-align: left;
+    text-align: center;
     width: 400px;
 `;
 

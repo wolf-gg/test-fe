@@ -7,6 +7,7 @@ import Topbar from './Topbar';
 const StyledMainContainer = styled.div`
     border: 1px solid lightgrey;
     padding: 4px;
+    width: 1900px;
 `;
 
 class MainContainer extends React.Component {
