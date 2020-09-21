@@ -1,6 +1,6 @@
-export const appointmentHeaders = {
-    name: 'Name',
-    to: 'Start',
-    from: 'End',
-    comment: 'Comment'
-};
+export const appointmentHeaders = [
+    'Name',
+    'Date',
+    'Schedule',
+    'Comment'
+];

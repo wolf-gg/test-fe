@@ -4,7 +4,6 @@ import styled from '@emotion/styled';
 import AppointmentRow from './AppointmentRow';
 import AddRow from '../components/AddRow'
 import EditRow from '../components/EditRow';
-import { appointmentHeaders } from '../constants/headers';
 import axios from '../helpers/axios';
 
 const StyledTable = styled.table`
@@ -36,7 +35,6 @@ class AppointmentTable extends React.Component {
         return (
             <AppointmentRow
                 isHeader='true'
-                appointment={appointmentHeaders}
             />
         );
     };
@@ -64,6 +62,18 @@ class AppointmentTable extends React.Component {
             this.setState({
                 appointments
             });
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    refreshTable = async () => {
+        try {
+            const { data } = await axios.get('/appointments');
+
+            this.setState({
+                appointments: data
+            })
         } catch (error) {
             console.log(error);
         }
@@ -105,7 +115,9 @@ class AppointmentTable extends React.Component {
                             changeIsEdit={() => {
                                 this.changeIsEdit(index);
                             }}
-                            handleDelete={this.handleDelete}
+                            handleDelete={() => {
+                                this.handleDelete(appointment._id);
+                            }}
                         />
                     );
                 }
@@ -121,7 +133,9 @@ class AppointmentTable extends React.Component {
                 </thead>
                 <tbody>
                     {this.renderCells()}
-                    <AddRow />
+                    <AddRow
+                        refreshTable={this.refreshTable}
+                    />
                 </tbody>
             </StyledTable>
         )

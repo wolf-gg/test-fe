@@ -18,8 +18,6 @@ class MainContainer extends React.Component {
             appointments: []
         };
     }
-
- 
     
     render() {
         return (

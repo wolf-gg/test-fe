@@ -5,6 +5,9 @@ import Row from '../common/Row';
 import Button from '../common/Button';
 import Cell from '../common/Cell';
 
+import * as dateHelper from '../helpers/dateHelper';
+import { appointmentHeaders } from '../constants/headers';
+
 const StyledCell = styled(Cell)`
     padding: 10px 10px 10px 10px;
     text-align: center;
@@ -14,22 +17,25 @@ const StyledCell = styled(Cell)`
 function AppointmentRow(props) {
     const { isHeader, appointment, changeIsEdit, handleDelete } = props;
 
-    const { _id } = appointment;
-
-    const toArray = (appointment) => {
-        const {
-            to,
-            from,
-            name,
-            comment
-        } = appointment;
-
-        return [
-            name,
-            to,
-            from,
-            comment
-        ];
+    const getArray = (appointment) => {
+        if (!isHeader) {
+            const {
+                to,
+                from,
+                name,
+                comment
+            } = appointment;
+            
+            return [
+                name,
+                dateHelper.getDate(to, from),
+                dateHelper.getSchedule(to, from),
+                comment
+            ];
+        } else {
+            return appointmentHeaders;
+        }
+            
     }
 
     const renderButtons = () => {
@@ -42,7 +48,7 @@ function AppointmentRow(props) {
                     />
                     <Button 
                         onClick={() => {
-                            handleDelete(_id)
+                            handleDelete(appointment.id)
                         }}
                         content='Delete'
                     />
@@ -55,7 +61,7 @@ function AppointmentRow(props) {
         <tr>
             <Row
                 isHeader={isHeader}
-                content={toArray(appointment)}
+                content={getArray(appointment)}
             />
             <StyledCell
                 content={renderButtons()}

@@ -1,9 +1,17 @@
 import * as React from 'react';
 import styled from '@emotion/styled';
 import axios from '../helpers/axios';
+import DatePicker from 'react-datepicker';
+import { TimePicker } from 'antd';
+
+import 'antd/dist/antd.css'
+import "react-datepicker/dist/react-datepicker.css";
 
 import Cell from '../common/Cell';
 import Button from '../common/Button';
+import * as dateHelper from '../helpers/dateHelper';
+
+const { RangePicker } = TimePicker;
 
 const ButtonCell = styled(Cell)`
     padding: 10px 10px 10px 10px;
@@ -17,15 +25,17 @@ const StyledCell = styled(Cell)`
     width: 400px;
 `;
 
+const StyledDatePicker = styled(DatePicker)`
+    text-align: center;
+`;
+
 class EditRow extends React.Component {
     constructor(props) {
         super(props);
         
         this.state = {
             nameInput: '',
-            commentInput: '',
-            toInput: '',
-            fromInput: ''
+            commentInput: ''
         };
     }
 
@@ -39,10 +49,11 @@ class EditRow extends React.Component {
             } = props.appointment;
 
             return {
+                startDate: dateHelper.getMomentNo(to).toDate(),
                 nameInput: name,
                 commentInput: comment,
-                toInput: to,
-                fromInput: from
+                toTime: dateHelper.getTime(to),
+                fromTime: dateHelper.getTime(from)
             }
         });
     }
@@ -52,8 +63,8 @@ class EditRow extends React.Component {
             await axios.patch(`/appointment/${this.props.appointment._id}`, {
                 name: this.state.nameInput,
                 comment: this.state.commentInput,
-                to: this.state.toInput,
-                from: this.state.fromInput
+                to: `${dateHelper.getDate(this.state.startDate)} ${this.state.toTime}`,
+                from: `${dateHelper.getDate(this.state.startDate)} ${this.state.fromTime}`
             });
 
             this.props.changeIsEdit();
@@ -102,6 +113,38 @@ class EditRow extends React.Component {
         )
     }
 
+    addDatePicker = () => {
+        return (
+            <StyledDatePicker 
+                selected={this.state.startDate} onChange={date => {
+                    this.setState({
+                        startDate: date,
+                    })
+                }}
+                dateFormat='MMMM d, yyyy'
+            />
+        );
+    }
+
+    addTimePicker = () => {
+        return (
+            <RangePicker
+                format='HH:mm'
+                allowClear={false}
+                disabledHours={() => [0,1,2,3,4,5,6,7,8,18,19,20,21,22,23]}
+                value={[dateHelper.getMoment(this.state.fromTime), dateHelper.getMoment(this.state.toTime)]}
+                onChange={(times) => {
+                    const timeStrings = dateHelper.getTimeFromRangePicker(times);
+                    
+                    this.setState({
+                        fromTime: timeStrings[0],
+                        toTime: timeStrings[1]
+                    });
+                }}
+            />
+        )
+    }
+
     render() {
         return(
             <tr>
@@ -109,10 +152,10 @@ class EditRow extends React.Component {
                     content={this.renderInput(this.handleName, this.state.nameInput)}
                 />
                 <StyledCell
-                    content={this.renderInput(this.handleFrom, this.state.fromInput)}
+                    content={this.addDatePicker()}
                 />
                 <StyledCell
-                    content={this.renderInput(this.handleTo, this.state.toInput)}
+                    content={this.addTimePicker()}
                 />
                 <StyledCell
                     content={this.renderInput(this.handleComment, this.state.commentInput)}
