@@ -38,20 +38,24 @@ class AddRow extends React.Component {
             startDate: new Date(),
             isDisabled: true,
             toTime: '9:00 AM',
-            fromTime: '9:00 AM'
+            fromTime: '9:00 AM',
+            nameInput: '',
+            commentInput:''
         };
     }
 
-    enableButton = () => {
-         console.log(this.state.toTime, this.state.fromTime);
+    componentDidUpdate() {
+        const isDisabled = this.enableButton();
 
-        if (
-            this.state.nameInput !== undefined &&
-            this.state.commentInput !== undefined &&
-            this.state.startDate !== undefined &&
-            this.state.toTime !== undefined &&
-            this.state.fromTime !== undefined
-        ) {
+        if (!isDisabled && this.state.isDisabled === true) {
+            this.setState({
+                isDisabled
+            })
+        }
+    }
+
+    enableButton = () => {
+        if (this.state.nameInput !== '' && this.state.commentInput !== '') {
             return false;
         }
 
@@ -68,6 +72,14 @@ class AddRow extends React.Component {
             });
 
             this.props.refreshTable();
+
+            this.setState({
+                isDisabled: true,
+                toTime: '9:00 AM',
+                fromTime: '9:00 AM',
+                nameInput: '',
+                commentInput: ''
+            })
         } catch (error) {
             console.log(error);
         }
@@ -85,21 +97,22 @@ class AddRow extends React.Component {
 
     handleName = (event) => {
         this.setState({
-            nameInput: event.target.value,
-            isDisabled: this.enableButton()
+            nameInput: event.target.value
         });
     }
 
     handleComment = (event) => {
         this.setState({
-            commentInput: event.target.value,
-            isDisabled: this.enableButton()
+            commentInput: event.target.value
         });
     }
 
-    renderInput = (handler) => {
+    renderInput = (content, handler) => {
         return (
-            <input onChange={handler}/>
+            <input 
+                onChange={handler}
+                value={content}
+            />
         )
     }
 
@@ -108,8 +121,7 @@ class AddRow extends React.Component {
             <StyledDatePicker 
                 selected={this.state.startDate} onChange={date => {
                     this.setState({
-                        startDate: date,
-                        isDisabled: this.enableButton()
+                        startDate: date
                     })
                 }}
                 dateFormat='MMMM d, yyyy'
@@ -140,7 +152,7 @@ class AddRow extends React.Component {
         return(
             <tr>
                 <StyledCell
-                    content={this.renderInput(this.handleName)}
+                    content={this.renderInput(this.state.nameInput, this.handleName)}
                 />
                 <StyledCell
                     content={this.addDatePicker()}
@@ -149,7 +161,7 @@ class AddRow extends React.Component {
                     content={this.addTimePicker()}
                 />
                 <StyledCell
-                    content={this.renderInput(this.handleComment)}
+                    content={this.renderInput(this.state.commentInput, this.handleComment)}
                 />
                 <ButtonCell
                     content={this.renderButtons()}
